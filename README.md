@@ -1,5 +1,3 @@
-# Studify code
-
 local Selection = game:GetService("Selection")
 local UIS = game:GetService("UserInputService")
 
@@ -27,3 +25,64 @@ MainFrame.Parent = widget
 
 OpenButton.Click:Connect(function()
 	widget.Enabled = not widget.Enabled
+
+end)
+
+local Labels = MainFrame.Frame.Labels
+local Values = MainFrame.Frame.Dropdowns
+
+local function ApplySurfaces(part:Part)
+	part.BackSurface = Enum.SurfaceType[Values.Back.Text]
+	part.BottomSurface =  Enum.SurfaceType[Values.Bottom.Text]
+	part.FrontSurface = Enum.SurfaceType[Values.Front.Text]
+	part.LeftSurface = Enum.SurfaceType[Values.Left.Text]
+	part.RightSurface = Enum.SurfaceType[Values.Right.Text]
+	part.TopSurface = Enum.SurfaceType[Values.Top.Text]
+end
+
+local function applicationFunction()
+	for _, v:Model in Selection:Get() do
+		if not v:IsA("Model") and not v:IsA("BasePart") and not v:IsA("Part") and not v:IsA("Folder") then
+			return
+		end
+
+		if v:IsA("Part") or v:IsA("BasePart") then
+			ApplySurfaces(v)
+		end
+
+		for _, w in v:GetDescendants() do
+			if w:IsA("Part") then
+				ApplySurfaces(w)
+			end
+		end
+
+	end
+end
+
+MainFrame.Frame.TextButton.MouseButton1Click:Connect(applicationFunction)
+
+local KeybindBox = MainFrame.Frame.TextBox
+local function verifyTextIntegrity(text: string): boolean
+	return #text == 1 and text:match("^[A-Za-z0-9]$") ~= nil
+end
+
+UIS.InputBegan:Connect(function(input, gpe)
+
+	if not widget.Enabled then return end
+
+	if input.KeyCode == Enum.KeyCode.K then
+		if KeybindBox.Text == "Keybind (default K)" then
+			applicationFunction()
+		end
+	end
+
+	if not verifyTextIntegrity(KeybindBox.Text) then
+		return
+	end
+
+	if input.KeyCode == Enum.KeyCode[KeybindBox.Text] then
+		applicationFunction()
+	end
+
+
+end)
