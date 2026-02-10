@@ -1,4 +1,6 @@
-#Studify code. Was made in a few minutes if you exclude UI, so don't judge harshly
+# Studify code. Was made in a few minutes if you exclude UI, so don't judge harshly
+
+
 local Selection = game:GetService("Selection")
 local UIS = game:GetService("UserInputService")
 
